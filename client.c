@@ -14,9 +14,9 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in serverinfo;
 	int datalen;
 	pid_t pid;
-
+	
 	char buf[MAXSIZE + 1];
-	int nbytes;
+
 
 	if (argc != 3) {
 		printf("Usage : %s <IP> <Port> \n", argv[0]);
