@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	memset(&serverinfo, 0, sizeof(serverinfo);
+	memset(&serverinfo, 0, sizeof(serverinfo));
 	serverinfo.sin_family = AF_INET;
 	serverinfo.sin_addr.s_addr = inet_addr(argv[1]); 
 	serverinfo.sin_port = htons(atoi(argv[2])); 
