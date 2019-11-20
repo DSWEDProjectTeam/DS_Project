@@ -80,9 +80,9 @@ int main(int argc, char *argv[]) {
 						exit(0);
 
 					case 0:
+						printf("Input q to exit !!");
 						while (1) {
 						fgets(buf, sizeof(buf), stdin);
-						printf("Message (q to exit): ");
 						write(client_sock, buf, MAXSIZE);
 						if(strncmp(buf, "q", 1)==0) {
 							puts("Exit Chatting !!\n\n");
