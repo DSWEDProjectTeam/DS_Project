@@ -10,6 +10,12 @@
 #define MAXSIZE 100
 #define MAX_NUM 100
 
+#define COLOR_RED "\x1b[31m"
+#define COLOR_GREEN "\x1b[32m"
+#define COLOR_YELLOW "\x1b[33m"
+#define COLOR_BLUE "\x1b[34m"
+#define COLOR_BRIGHT_BLUE "\x1b[36m"
+
 struct __User {
 	char id[MAX_INFO + 1];
 	char passwd[MAX_INFO + 1];
@@ -79,6 +85,8 @@ int main(int argc,char* argv[]) {
 
 	while(1) {
 		END:
+		system("clear");
+		printf(COLOR_BRIGHT_BLUE);
 		printf(" ============================\n");
 		printf("|                            |\n");
 		printf("|  1. Sign  Up               |\n");
@@ -87,11 +95,16 @@ int main(int argc,char* argv[]) {
 		printf("|  4. Exit                   |\n");
 		printf("|                            |\n");
 		printf(" ============================\n\n");
-		printf(" Input Option: ");
+
+		printf(COLOR_GREEN);
+		printf("  Input Option: ");
+
 		scanf("%d", &input);
 
-		if(input == 1)
+		if(input == 1) {
+			system("clear");
 			insert(user, &person);
+		}
 		else if(input == 2)
 		{
 			if(logIn(user, &person))
@@ -102,9 +115,9 @@ int main(int argc,char* argv[]) {
 							perror("fork() error\n");
 							exit(0);
                     case 0:
+							printf("Input q to exit!!\n");
 							while (1) {
 							fgets(buf, sizeof(buf), stdin);
-							printf("Message (q to exit): ");
 							write(connect_sock, buf, MAXSIZE);
 							if(strncmp(buf, "q", 1)==0) {
 								puts("Exit Chatting !!\n\n");
@@ -139,7 +152,7 @@ int main(int argc,char* argv[]) {
 		else
 		{
 			printf("Please enter only 1,2,3,4 !!\n\n");
-			input =0;
+			input = 0;
 		}
 	}
 	close(server_sock);
@@ -174,23 +187,57 @@ int openFile(User* ptr, int*num) {
 }
 
 int insert(User* ptr, int* num){
-
+	char id[30];
+	char passwd[30];
     if (*num < MAX_NUM){
+		printf(COLOR_YELLOW);
 		printf(" ============================\n");
 		printf("|\n");
         printf("| Enter your ID :");
-        scanf("%s", ptr[*num].id);
+        scanf("%s", id);
         printf("| Enter your Password:");
-        scanf("%s", ptr[*num].passwd);
-		printf("|\n");
+        scanf("%s", passwd);
+		system("clear");
+		printf(" =======================================\n");
+   		printf("| SAVING ###########                    |\n");
+		printf(" =======================================\n");
+		sleep(1);
+		system("clear");
+		printf(" =======================================\n");
+   		printf("| SAVING #####################          |\n");
+		printf(" =======================================\n");
+		sleep(1);
+		system("clear");
+		printf(" =======================================\n");
+   		printf("| SAVING ###############################|\n");
+		printf(" =======================================\n");
+
+		for(int i = 0 ; i<MAX_NUM;i++) {
+			if(!strcmp(id, ptr[i].id)) {
+				sleep(1);
+				system("clear");
+				printf(COLOR_RED);
+				printf(" =======================================\n");
+   				printf("| ERROR :  ID already exists !!         |\n");
+				printf(" =======================================\n");
+				sleep(1);
+				return 0;
+			}
+		}
+		strcpy(ptr[*num].id,id);
+		strcpy(ptr[*num].passwd,passwd);
         (*num)++;
         printf("| Data Inserted              |\n");
     }
-    else
+    else if(*num = MAX_NUM) {
+        sleep(1);
+		 system("clear");
+		 printf(COLOR_RED);
         printf(" =======================================\n");
    		printf("| ERROR :  Data Full !!                 |\n");
 		printf(" =======================================\n");
-
+		sleep(1);
+	}
 	if(*num>0) {
 		int i, state;
 		FILE*fp = fopen("UserInfo.txt","wt");
@@ -209,10 +256,11 @@ int insert(User* ptr, int* num){
 			printf("file close() error\n");
 			return 1;
 		}
-
-		printf("| Information saved          |\n");
-		printf("|\n");
-		printf(" ============================\n\n\n\n");
+		system("clear");
+        printf(" =======================================\n");
+   		printf("|  Information Saved !!!                |\n");
+		printf(" =======================================\n");
+		sleep(1);
 		return 0;
 	}
 }
@@ -222,7 +270,6 @@ int logIn(User* ptr, int* num)
 {
     char id[30];
 	char passwd[30];
-    int i;
 
     if (*num > 0){
 		printf("\n");
@@ -233,7 +280,7 @@ int logIn(User* ptr, int* num)
 		scanf("%s", passwd);
 		printf(" =======================================\n");
 		printf("\n");
-		for (i = 0; i < MAX_NUM; i++){
+		for (int i = 0; i < MAX_NUM; i++){
             if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)){
 				printf(" =======================================\n");
                 printf("| Login Successful!!  Start Chatting !! |\n");
