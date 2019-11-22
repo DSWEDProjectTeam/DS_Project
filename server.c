@@ -20,6 +20,7 @@ typedef struct __User User;
 int openFile(User *ptr, int* num);
 int insert(User* ptr, int* num);
 int logIn(User* ptr, int* num);
+int deleted(User* ptr, int* num);
 
 int main(int argc,char* argv[]) {
     int server_sock;
@@ -126,6 +127,10 @@ int main(int argc,char* argv[]) {
 				}
 			}
 		}
+        else if(input == 3)
+        {
+            deleted(user, &person);
+        }
 		else if(input == 4)
 		{
 			printf(" Exit! Chatting Program !!\n");
@@ -247,4 +252,44 @@ int logIn(User* ptr, int* num)
 		printf(" =======================================\n");
         return 0;
  	}
+}
+
+int deleted(User* ptr, int* num) {
+    char id[30];
+    char passwd[30];
+    int i, j;
+
+    if (*num > 0) {
+        printf("Input Id: ");
+        scanf("%s", id);
+        printf("Input passwd: ");
+        scanf("%s", passwd);
+
+        for (i = 0; i < MAX_NUM; i++) {
+            if (strcmp(id, ptr[i].id) == 0) {
+                (*num)--;
+                printf("Data Deleted\n\n");
+                if(i != MAX_NUM - 1) {
+                    for (j = i; j < MAX_NUM; j++) {
+                        strcpy(ptr[j].id, ptr[j+1].id);
+                        strcpy(ptr[j].passwd, ptr[j+1].passwd);
+                    }
+
+                    *ptr[MAX_NUM - 1].id = 0;
+                    *ptr[MAX_NUM - 1].passwd = 0;
+                }
+                else {
+                    *ptr[MAX_NUM - 1].id = 0;
+                    *ptr[MAX_NUM - 1].passwd = 0;
+                }
+                return 0;
+            }
+        }
+        printf("Not Found\n\n");
+        return 0;
+    }
+    else {
+        printf("No Data\n\n");
+        return 0;
+    }
 }
