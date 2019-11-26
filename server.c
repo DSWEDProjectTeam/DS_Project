@@ -186,7 +186,9 @@ int main(int argc, char *argv[]) {
         } 
         else 
         {
+            system("clear");
             printf("Please enter only 1,2,3,4 !!\n\n");
+            sleep(1);
         }
     }
     free(input);
