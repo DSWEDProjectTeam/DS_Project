@@ -246,7 +246,6 @@ int insert(User *ptr, int *num) {
 
 int logIn(User *ptr, int *num, char *id, char *passwd) {
     int i;
-
     if (*num > 0) {
         for (i = 0; i < MAX_NUM; i++) {
             if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)) {
