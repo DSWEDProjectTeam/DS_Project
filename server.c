@@ -25,7 +25,7 @@ typedef struct __User User;
 
 int openFile(User *ptr, int* num);
 int insert(User* ptr, int* num);
-int logIn(User* ptr, int* num);
+int logIn(User* ptr, int* num, char* id, char* passwd);
 int deleted(User* ptr, int* num);
 
 int main(int argc,char* argv[]) {
@@ -34,6 +34,9 @@ int main(int argc,char* argv[]) {
     int addrlen, datalen;
 
     char buf[MAXSIZE + 1];
+    char data[MAXSIZE + 1];
+    char id[30];
+    char passwd[30];
     User user[MAX_INFO];
 	int person = 0;
 
@@ -107,8 +110,16 @@ int main(int argc,char* argv[]) {
 		}
 		else if(input == 2)
 		{
-			if(logIn(user, &person))
+			if(logIn(user, &person, id, passwd))
 			{
+				printf("\n");
+				printf(" =======================================\n");
+       				printf("| ID: ");
+     				scanf("%s", id);
+				printf("| PASSWORD: ");
+				scanf("%s", passwd);
+				printf(" =======================================\n");
+				printf("\n");
 				while(1) {
 					switch(pid = fork()) {
                     case -1:
@@ -118,7 +129,8 @@ int main(int argc,char* argv[]) {
 							printf("Input q to exit!!\n");
 							while (1) {
 							fgets(buf, sizeof(buf), stdin);
-							write(connect_sock, buf, MAXSIZE);
+							sprintf(data,"%s : %s", id, buf);
+							write(connect_sock, data, MAXSIZE);
 							if(strncmp(buf, "q", 1)==0) {
 								puts("Exit Chatting !!\n\n");
 								goto END;
@@ -266,24 +278,13 @@ int insert(User* ptr, int* num){
 }
 
 
-int logIn(User* ptr, int* num)
+int logIn(User* ptr, int* num, char* id, char* passwd)
 {
-    char id[30];
-	char passwd[30];
-
     if (*num > 0){
-		printf("\n");
-		printf(" =======================================\n");
-        printf("| ID: ");
-        scanf("%s", id);
-		printf("| PASSWORD: ");
-		scanf("%s", passwd);
-		printf(" =======================================\n");
-		printf("\n");
 		for (int i = 0; i < MAX_NUM; i++){
-            if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)){
+        	    if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)){
 				printf(" =======================================\n");
-                printf("| Login Successful!!  Start Chatting !! |\n");
+              			printf("| Login Successful!!  Start Chatting !! |\n");
 				printf(" =======================================\n\n");
                 return 1;
             }
