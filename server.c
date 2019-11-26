@@ -110,16 +110,16 @@ int main(int argc,char* argv[]) {
 		}
 		else if(input == 2)
 		{
+			printf("\n");
+			printf(" =======================================\n");
+       			printf("| ID: ");
+       			scanf("%s", id);
+			printf("| PASSWORD: ");
+			scanf("%s", passwd);
+			printf(" =======================================\n");
+			printf("\n");
 			if(logIn(user, &person, id, passwd))
 			{
-				printf("\n");
-				printf(" =======================================\n");
-       				printf("| ID: ");
-       				scanf("%s", id);
-				printf("| PASSWORD: ");
-				scanf("%s", passwd);
-				printf(" =======================================\n");
-				printf("\n");
 				while(1) {
 					switch(pid = fork()) {
                     case -1:
@@ -278,7 +278,7 @@ int insert(User* ptr, int* num){
 }
 
 
-int logIn(User* ptr, int* num)
+int logIn(User* ptr, int* num, char* id, char* passwd)
 {
     if (*num > 0){
 		for (int i = 0; i < MAX_NUM; i++){
