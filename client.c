@@ -89,15 +89,15 @@ int main(int argc, char *argv[]) {
 		}
 		else if(input == 2)
 		{
+			printf("\n");
+			printf(" =======================================\n");
+     			printf("| ID: ");
+     			scanf("%s", id);
+			printf("| PASSWORD: ");
+			scanf("%s", passwd);
+			printf(" =======================================\n");
+			printf("\n");
 			if(logIn(user, &person, id, passwd)) {
-				printf("\n");
-				printf(" =======================================\n");
-     				printf("| ID: ");
-     				scanf("%s", id);
-				printf("| PASSWORD: ");
-				scanf("%s", passwd);
-				printf(" =======================================\n");
-				printf("\n");
 				switch (pid = fork()) {
 					case -1:
 						perror("fork() error\n");
@@ -257,7 +257,7 @@ int insert(User* ptr, int* num){
 }
 
 
-int logIn(User* ptr, int* num)
+int logIn(User* ptr, int* num, char* id, char* passwd)
 {
     int i;
 
