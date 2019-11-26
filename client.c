@@ -25,7 +25,7 @@ typedef struct __User User;
 
 int openFile(User *ptr, int* num);
 int insert(User* ptr, int* num);
-int logIn(User* ptr, int* num);
+int logIn(User* ptr, int* num, char* id, char* passwd);
 int deleted(User* ptr, int* num);
 
 int main(int argc, char *argv[]) {
@@ -35,6 +35,9 @@ int main(int argc, char *argv[]) {
 	pid_t pid;
 
 	char buf[MAXSIZE + 1];
+	char data[MAXSIZE + 1];
+	char id[30];
+	char passwd[30];
 	User user[MAX_INFO];
 	int person = 0;
 	int input=0;
@@ -86,8 +89,15 @@ int main(int argc, char *argv[]) {
 		}
 		else if(input == 2)
 		{
-			if(logIn(user, &person)) {
-
+			if(logIn(user, &person, id, passwd)) {
+				printf("\n");
+				printf(" =======================================\n");
+     				printf("| ID: ");
+     				scanf("%s", id);
+				printf("| PASSWORD: ");
+				scanf("%s", passwd);
+				printf(" =======================================\n");
+				printf("\n");
 				switch (pid = fork()) {
 					case -1:
 						perror("fork() error\n");
@@ -97,7 +107,8 @@ int main(int argc, char *argv[]) {
 						printf("Input q to exit !!");
 						while (1) {
 						fgets(buf, sizeof(buf), stdin);
-						write(client_sock, buf, MAXSIZE);
+						sprintf(data, "%s : %s", id, buf);
+						write(client_sock, data, MAXSIZE);
 						if(strncmp(buf, "q", 1)==0) {
 							puts("Exit Chatting !!\n\n");
 							goto END;
@@ -237,7 +248,7 @@ int insert(User* ptr, int* num){
 			return 1;
 		}
 		system("clear");
-        printf(" =======================================\n");
+     		printf(" =======================================\n");
    		printf("|  Information Saved !!!                |\n");
 		printf(" =======================================\n");
 		sleep(1);
@@ -248,36 +259,26 @@ int insert(User* ptr, int* num){
 
 int logIn(User* ptr, int* num)
 {
-    char id[30];
-	char passwd[30];
     int i;
 
     if (*num > 0){
-        printf("\n");
-		printf(" =======================================\n");
-        printf("| ID: ");
-        scanf("%s", id);
-		printf("| PASSWORD: ");
-		scanf("%s", passwd);
-		printf(" =======================================\n");
-		printf("\n");
 		for (i = 0; i < MAX_NUM; i++){
-            if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)){
+           		 if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)){
 				printf(" =======================================\n");
-                printf("| Login Successful!!  Start Chatting !! |\n");
+            			printf("| Login Successful!!  Start Chatting !! |\n");
 				printf(" =======================================\n\n");
                 return 1;
             }
         }
     printf(" =======================================\n");
     printf("| LogIn Fail :  Wrong ID or PASSWORD !! |\n");
-	printf(" =======================================\n");
+    printf(" =======================================\n");
     return 0;
     }
     else{
         printf(" =======================================\n");
     	printf("| LogIn Fail :  No Data !!              |\n");
-		printf(" =======================================\n");
+	printf(" =======================================\n");
         return 0;
  	}
 }
