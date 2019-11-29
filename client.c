@@ -171,7 +171,10 @@ int main(int argc, char *argv[])
         else 
         {
             system("clear");
-            printf("please enter only 1,2,3,4 !!\n\n");
+				printf(COLOR_RED);
+				printf("===============================\n");
+            printf("| please enter only 1,2,3,4 !! |\n");
+				printf("===============================\n\n");
             sleep(1);
         }
     }
@@ -334,17 +337,50 @@ int deleted(User *ptr, int *num)
 
     if (*num > 0) 
     {
-        printf("Input Id: ");
+		  system("clear");
+		  printf(COLOR_RED);
+		  printf("========================================\n");
+		  printf("| Your ID cannot be reused or recovered |\n");
+		  printf("| If you leave. Withdrawal ID can't be  |\n");
+		  printf("| reused or restored by both  yourself  |\n");
+		  printf("| and others. Please choose carefully!  |\n");
+		  printf("|                                       |\n");
+		  printf("| If you still want to delete,          |\n");
+		  printf("| please enter your Id  Passwd below.   |\n");
+		  printf("|                                       |\n");
+        printf("| Input ID:  ");
         scanf("%s", id);
-        printf("Input passwd: ");
+        printf("| Input passwd:  ");
         scanf("%s", passwd);
+		  printf("|\n");
+		  printf("=======================================\n\n\n");
 
         for (i = 0; i < MAX_NUM; i++) 
         {
             if (strcmp(id, ptr[i].id) == 0) 
             {
                 (*num)--;
-                printf("Data Deleted\n\n");
+					 printf(COLOR_BLUE);
+					 system("clear");
+					 printf("=======================================\n");
+					 printf("| Delete ########                      |\n");
+					 printf("=======================================\n");
+					 sleep(1);
+					 system("clear");
+					 printf("=======================================\n");
+					 printf("| Delete ###################           |\n");
+					 printf("=======================================\n");
+					 sleep(1);
+					 system("clear");
+					 printf("=======================================\n");
+					 printf("| Delete ##############################|\n");
+					 printf("=======================================\n");
+					 sleep(1);
+					 system("clear");
+					 printf("=======================================\n");
+                printf("|    Member Withdrawal Completed!!!    |\n");
+					 printf("=======================================\n\n\n");
+					 sleep(1);
                 if (i != MAX_NUM - 1) {
                     for (j = i; j < MAX_NUM; j++) 
                     {
@@ -364,13 +400,23 @@ int deleted(User *ptr, int *num)
                 return 0;
             }
         }
-        printf("Not Found\n\n");
+		  printf(COLOR_RED);
+		  system("clear");
+		  printf("=======================================\n");
+        printf("|   No such information was found!!!  |\n");
+		  printf("=======================================\n\n\n");
+		  sleep(1);
         return 0;
     } 
     
     else 
     {
-        printf("No Data\n\n");
+		  printf(COLOR_RED);
+		  system("clear");
+		  printf("========================================\n");
+        printf("|   There is no search information!!!   |\n");
+		  printf("========================================\n\n\n");
+		  sleep(1);
         return 0;
     }
 }
