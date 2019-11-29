@@ -337,6 +337,7 @@ int deleted(User *ptr, int *num)
 
     if (*num > 0) 
     {
+		  system("clear");
 		  printf(COLOR_RED);
 		  printf("========================================\n");
 		  printf("| Your ID cannot be reused or recovered |\n");
@@ -346,6 +347,7 @@ int deleted(User *ptr, int *num)
 		  printf("|                                       |\n");
 		  printf("| If you still want to delete,          |\n");
 		  printf("| please enter your Id  Passwd below.   |\n");
+		  printf("|                                       |\n");
         printf("| Input ID:  ");
         scanf("%s", id);
         printf("| Input passwd:  ");
@@ -378,6 +380,7 @@ int deleted(User *ptr, int *num)
 					 printf("=======================================\n");
                 printf("|    Member Withdrawal Completed!!!    |\n");
 					 printf("=======================================\n\n\n");
+					 sleep(1);
                 if (i != MAX_NUM - 1) {
                     for (j = i; j < MAX_NUM; j++) 
                     {
@@ -398,18 +401,22 @@ int deleted(User *ptr, int *num)
             }
         }
 		  printf(COLOR_RED);
+		  system("clear");
 		  printf("=======================================\n");
         printf("|   No such information was found!!!  |\n");
 		  printf("=======================================\n\n\n");
+		  sleep(1);
         return 0;
     } 
     
     else 
     {
 		  printf(COLOR_RED);
+		  system("clear");
 		  printf("========================================\n");
         printf("|   There is no search information!!!   |\n");
 		  printf("========================================\n\n\n");
+		  sleep(1);
         return 0;
     }
 }
