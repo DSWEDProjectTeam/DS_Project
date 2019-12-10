@@ -362,7 +362,7 @@ int deleted(User *ptr, int *num)
 
         for (i = 0; i < MAX_NUM; i++)
         {
-            if (!strcmp(id, ptr[i].id) == 0)
+            if (strcmp(id, ptr[i].id) == 0)
             {
                 (*num)--;
 				printf(COLOR_BLUE);
@@ -375,13 +375,13 @@ int deleted(User *ptr, int *num)
                         strcpy(ptr[j].id, ptr[j + 1].id);
                         strcpy(ptr[j].passwd, ptr[j + 1].passwd);
                     }
-                    *ptr[MAX_NUM - 1].id = 0;
-                    *ptr[MAX_NUM - 1].passwd = 0;
+                    *ptr[MAX_NUM - 1].id = NULL;
+                    *ptr[MAX_NUM - 1].passwd = NULL;
                 }
                 else
                 {
-                    *ptr[MAX_NUM - 1].id = 0;
-                    *ptr[MAX_NUM - 1].passwd = 0;
+                    *ptr[MAX_NUM - 1].id = NULL;
+                    *ptr[MAX_NUM - 1].passwd = NULL;
                 }
                 printf("\n\n\n\n");
 				printf("                   =======================================\n");
@@ -391,7 +391,8 @@ int deleted(User *ptr, int *num)
                 system("clear");
                 return 0;
             }
-            else {
+        }
+
                 write (1, "\033[1;1H\033[2J", 10);
                 printLogo();
 		        printf(COLOR_RED);
@@ -401,8 +402,7 @@ int deleted(User *ptr, int *num)
 		        printf("                   =======================================\n");
 		        sleep(1);
                 return 0;
-            }
-        }
+
     }
     else
     {
