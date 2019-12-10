@@ -125,6 +125,7 @@ int main(int argc, char *argv[]) {
             printf("\n");
             if (logIn(user, &person, id, passwd))
             {
+                while(1) {
                     switch (pid = fork())
                     {
                     case -1:
@@ -160,7 +161,7 @@ int main(int argc, char *argv[]) {
                                 exit(1);
                         }
                     }
-
+                }
             }
         }
         else if (dasin == 3)
@@ -316,7 +317,9 @@ int logIn(User *ptr, int *num, char *id, char *passwd)
                 printf("                   =======================================\n\n");
                 return 1;
             }
-            else
+
+        }
+        if (strcmp(id, ptr[i].id) && strcmp(passwd, ptr[i].passwd))
             {
                 write (1, "\033[1;1H\033[2J", 10);
                 printLogo();
@@ -327,7 +330,6 @@ int logIn(User *ptr, int *num, char *id, char *passwd)
                 sleep(1);
                 return 0;
             }
-        }
 
     }
     else
