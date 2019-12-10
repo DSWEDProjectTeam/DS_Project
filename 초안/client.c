@@ -17,7 +17,7 @@
 #define COLOR_BLUE "\x1b[34m"
 #define COLOR_BRIGHT_BLUE "\x1b[36m"
 
-struct __User 
+struct __User
 {
     char id[MAX_INFO + 1];
     char passwd[MAX_INFO + 1];
@@ -29,7 +29,7 @@ int insert(User *ptr, int *num);
 int logIn(User *ptr, int *num, char *id, char *passwd);
 int deleted(User *ptr, int *num);
 
-int main(int argc, char *argv[]) 
+int main(int argc, char *argv[])
 {
     int client_sock;
     struct sockaddr_in serverinfo;
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     int person = 0;
     char *input = malloc(sizeof(char) * 10);
 
-    if (argc != 3) 
+    if (argc != 3)
     {
         printf("Usage : %s <IP> <Port> \n", argv[0]);
         exit(1);
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     client_sock = socket(PF_INET, SOCK_STREAM, 0);
 
-    if (client_sock == -1) 
+    if (client_sock == -1)
     {
         perror("socket() failed\n");
         exit(1);
@@ -64,14 +64,14 @@ int main(int argc, char *argv[])
     serverinfo.sin_port = htons(atoi(argv[2]));
 
     if (-1 == connect(client_sock, (struct sockaddr *)&serverinfo,
-                      sizeof(serverinfo))) 
+                      sizeof(serverinfo)))
                       {
         perror("connect() error\n");
         exit(1);
     }
     openFile(user, &person);
 
-    while (1) 
+    while (1)
     {
     END:
         system("clear");
@@ -106,12 +106,12 @@ int main(int argc, char *argv[])
         scanf("%s", input);
         int dasin = atoi(input);
 
-        if (dasin == 1) 
+        if (dasin == 1)
         {
             system("clear");
             insert(user, &person);
-        } 
-        else if (dasin == 2) 
+        }
+        else if (dasin == 2)
         {
             system("clear");
             printf("\n");
@@ -131,12 +131,12 @@ int main(int argc, char *argv[])
                 case 0:
                     printf("Input EXIT to exit !!");
                     printf("\n");
-                    while (1) 
+                    while (1)
                     {
                         fgets(buf, sizeof(buf), stdin);
                         sprintf(data, "%s : %s", id, buf);
                         write(client_sock, data, MAXSIZE);
-                        if (strncmp(buf, "EXIT", 4) == 0) 
+                        if (strncmp(buf, "EXIT", 4) == 0)
                         {
                             puts("Exit Chatting !!\n\n");
                             goto END;
@@ -145,9 +145,9 @@ int main(int argc, char *argv[])
                     exit(1);
 
                 default:
-                    while (1) 
+                    while (1)
                     {
-                        if (read(client_sock, buf, MAXSIZE) < 0) 
+                        if (read(client_sock, buf, MAXSIZE) < 0)
                         {
                             perror("read() error\n");
                             exit(0);
@@ -158,17 +158,17 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-        } 
-        else if (dasin == 3) 
+        }
+        else if (dasin == 3)
         {
             deleted(user, &person);
-        } 
+        }
         else if (dasin == 4)
         {
             printf(" Exit! Chatting Program !!\n\n\n");
             return 0;
-        } 
-        else 
+        }
+        else
         {
             system("clear");
 				printf(COLOR_RED);
@@ -183,18 +183,18 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-int openFile(User *ptr, int *num) 
+int openFile(User *ptr, int *num)
 {
     int state;
     char temp;
     FILE *fp = fopen("UserInfo.txt", "rt");
 
-    if (fp == NULL) 
+    if (fp == NULL)
     {
         perror("open() error!");
         return 1;
     }
-    while (1) 
+    while (1)
     {
         fscanf(fp, "%s %s", ptr[*num].id, ptr[*num].passwd);
         if (feof(fp) != 0)
@@ -202,7 +202,7 @@ int openFile(User *ptr, int *num)
         (*num)++;
     }
     state = fclose(fp);
-    if (state != 0) 
+    if (state != 0)
     {
         printf("file close error\n");
         return 1;
@@ -210,11 +210,11 @@ int openFile(User *ptr, int *num)
     return 0;
 }
 
-int insert(User *ptr, int *num) 
+int insert(User *ptr, int *num)
 {
     char id[30];
     char passwd[30];
-    if (*num < MAX_NUM) 
+    if (*num < MAX_NUM)
     {
         printf(COLOR_YELLOW);
         printf(" ============================\n");
@@ -240,7 +240,7 @@ int insert(User *ptr, int *num)
 
         for (int i = 0; i < MAX_NUM; i++) {
 
-            if (!strcmp(id, ptr[i].id)) 
+            if (!strcmp(id, ptr[i].id))
             {
                 sleep(1);
                 system("clear");
@@ -257,7 +257,7 @@ int insert(User *ptr, int *num)
         (*num)++;
         sleep(1);
 
-    } else if (*num = MAX_NUM) 
+    } else if (*num = MAX_NUM)
     {
         sleep(1);
         system("clear");
@@ -268,24 +268,24 @@ int insert(User *ptr, int *num)
         sleep(1);
     }
 
-    if (*num > 0) 
+    if (*num > 0)
     {
         int i, state;
         FILE *fp = fopen("UserInfo.txt", "wt");
 
-        if (fp == NULL) 
+        if (fp == NULL)
         {
             printf("open ()error!");
             return 1;
         }
 
-        for (i = 0; i < *num; i++) 
+        for (i = 0; i < *num; i++)
         {
             fprintf(fp, "%s %s", ptr[i].id, ptr[i].passwd);
             fputc('\n', fp);
         }
         state = fclose(fp);
-        if (state != 0) 
+        if (state != 0)
         {
             printf("file close() error\n");
             return 1;
@@ -299,15 +299,15 @@ int insert(User *ptr, int *num)
     }
 }
 
-int logIn(User *ptr, int *num, char *id, char *passwd) 
+int logIn(User *ptr, int *num, char *id, char *passwd)
 {
     int i;
 
-    if (*num > 0) 
+    if (*num > 0)
     {
-        for (i = 0; i < MAX_NUM; i++) 
+        for (i = 0; i < MAX_NUM; i++)
         {
-            if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)) 
+            if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd))
             {
                 printf(" =======================================\n");
                 printf("| Login Successful!!  Start Chatting !! |\n");
@@ -319,8 +319,8 @@ int logIn(User *ptr, int *num, char *id, char *passwd)
         printf("| LogIn Fail :  Wrong ID or PASSWORD !! |\n");
         printf(" =======================================\n");
         return 0;
-    } 
-    else 
+    }
+    else
     {
         printf(" =======================================\n");
         printf("| LogIn Fail :  No Data !!              |\n");
@@ -329,13 +329,13 @@ int logIn(User *ptr, int *num, char *id, char *passwd)
     }
 }
 
-int deleted(User *ptr, int *num) 
+int deleted(User *ptr, int *num)
 {
     char id[30];
     char passwd[30];
     int i, j;
 
-    if (*num > 0) 
+    if (*num > 0)
     {
 		  system("clear");
 		  printf(COLOR_RED);
@@ -355,9 +355,9 @@ int deleted(User *ptr, int *num)
 		  printf("|\n");
 		  printf("=======================================\n\n\n");
 
-        for (i = 0; i < MAX_NUM; i++) 
+        for (i = 0; i < MAX_NUM; i++)
         {
-            if (strcmp(id, ptr[i].id) == 0) 
+            if (strcmp(id, ptr[i].id) == 0)
             {
                 (*num)--;
 					 printf(COLOR_BLUE);
@@ -382,7 +382,7 @@ int deleted(User *ptr, int *num)
 					 printf("=======================================\n\n\n");
 					 sleep(1);
                 if (i != MAX_NUM - 1) {
-                    for (j = i; j < MAX_NUM; j++) 
+                    for (j = i; j < MAX_NUM; j++)
                     {
                         strcpy(ptr[j].id, ptr[j + 1].id);
                         strcpy(ptr[j].passwd, ptr[j + 1].passwd);
@@ -390,9 +390,9 @@ int deleted(User *ptr, int *num)
 
                     *ptr[MAX_NUM - 1].id = 0;
                     *ptr[MAX_NUM - 1].passwd = 0;
-                } 
+                }
 
-                else 
+                else
                 {
                     *ptr[MAX_NUM - 1].id = 0;
                     *ptr[MAX_NUM - 1].passwd = 0;
@@ -407,9 +407,9 @@ int deleted(User *ptr, int *num)
 		  printf("=======================================\n\n\n");
 		  sleep(1);
         return 0;
-    } 
-    
-    else 
+    }
+
+    else
     {
 		  printf(COLOR_RED);
 		  system("clear");

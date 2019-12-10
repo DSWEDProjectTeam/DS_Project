@@ -16,23 +16,28 @@
 #define COLOR_BLUE "\x1b[34m"
 #define COLOR_BRIGHT_BLUE "\x1b[36m"
 
-struct __User 
+struct __User
 {
     char id[MAX_INFO + 1];
     char passwd[MAX_INFO + 1];
 };
+
 typedef struct __User User;
 
 int openFile(User *ptr, int *num);
 int insert(User *ptr, int *num);
 int logIn(User *ptr, int *num, char *id, char *passwd);
 int deleted(User *ptr, int *num);
+int connect();
+void printLogo();
+void printMenu();
+void printLoading();
+void printWarning();
 
 int main(int argc, char *argv[]) {
     int server_sock;
     int connect_sock;
     int addrlen, datalen;
-
     char buf[MAXSIZE + 1];
     char data[MAXSIZE + 1];
     char id[30];
@@ -42,9 +47,7 @@ int main(int argc, char *argv[]) {
 
     struct sockaddr_in server_addr;
     struct sockaddr_in connect_addr;
-
     pid_t pid;
-
     int fd;
     char *input = malloc(sizeof(char) * 10);
 
@@ -84,63 +87,44 @@ int main(int argc, char *argv[]) {
         perror("accept() error\n");
         exit(-1);
     } else
-        printf("Client Connected!\n");
+    printf("Client Connected!\n");
     openFile(user, &person);
 
     while (1) {
     END:
         system("clear");
-        printf(COLOR_YELLOW);
-        printf(" __      ____  _____   _   ____ \n");
-        printf("|  |    |  __||_   _| |_| /  __)\n");
-        printf("|  |    | |_    | |   _|| | (_  \n");
-        printf("|  |    |  _|   | |       \\_  \\\n");
-        printf("|  |___ | |__   | |       __) |\n");
-        printf("|______||____|  |_|      (____/ \n");
-        printf("                                \n");
-        printf("        _               _     _ \n");
-        printf("  ____ | |      ____  _| |_  | | \n");
-        printf(" /  __|| |___  / _  ||_   _| |_| \n");
-        printf(" | |__ |  _  || (_| |  | |_   _   \n");
-        printf(" \\____||_| |_| \\__,_|   \\__| |_| \n");
-        printf("                                \n");
-
-        printf(COLOR_BRIGHT_BLUE);
-        printf(" ============================== \n");
-        printf("|                              |\n");
-        printf("|  1. Sign  Up                 |\n");
-        printf("|  2. Login  &  Start  chat    |\n");
-        printf("|  3. Sign  Out                |\n");
-        printf("|  4. Exit                     |\n");
-        printf("|                              |\n");
-        printf(" ==============================\n\n");
-
+        printLogo();
+        printMenu();
         printf(COLOR_GREEN);
+        printf("\n");
         printf("  Input Option: ");
 
         scanf("%s", input);
+        system("clear");
         int dasin = atoi(input);
 
-        if (dasin == 1) 
+        if (dasin == 1)
         {
             system("clear");
+            printLogo();
+            printf("\n\n");
             insert(user, &person);
-        } else if (dasin == 2) 
+        } else if (dasin == 2)
         {
             system("clear");
-            printf("\n");
-            printf(" =======================================\n");
-            printf("| ID: ");
+            printLogo();
+            printf("\n\n\n");
+            printf(COLOR_BRIGHT_BLUE);
+            printf("                       ID: ");
             scanf("%s", id);
-            printf("| PASSWORD: ");
+            printf("                 PASSWORD: ");
             scanf("%s", passwd);
-            printf(" =======================================\n");
             printf("\n");
-            if (logIn(user, &person, id, passwd)) 
+            if (logIn(user, &person, id, passwd))
             {
-                while (1) 
+                while (1)
                 {
-                    switch (pid = fork()) 
+                    switch (pid = fork())
                     {
                     case -1:
                         perror("fork() error\n");
@@ -160,9 +144,9 @@ int main(int argc, char *argv[]) {
                         exit(1);
 
                     default:
-                        while (1) 
+                        while (1)
                         {
-                            if (read(connect_sock, buf, MAXSIZE) < 0) 
+                            if (read(connect_sock, buf, MAXSIZE) < 0)
                             {
                                 perror("read() error\n");
                                 exit(0);
@@ -174,23 +158,30 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
-        } 
-        else if (dasin == 3) 
+        }
+        else if (dasin == 3)
         {
+            system("clear");
+            printLogo();
+            printf("\n\n");
+            printWarning();
             deleted(user, &person);
-        } 
-        else if (dasin == 4) 
+        }
+        else if (dasin == 4)
         {
             printf(" Exit! Chatting Program !!\n");
             return 0;
-        } 
-        else 
+        }
+        else
         {
             system("clear");
+            printf(COLOR_YELLOW);
+            printLogo();
+            printf("\n\n\n");
 				printf(COLOR_RED);
-				printf("===============================\n");
-            printf("| please enter only 1,2,3,4 !! |\n");
-				printf("===============================\n\n");
+				printf("                   =======================================\n");
+                printf("                  |  ERROR! Please enter only 1,2,3,4 !!  |\n");
+				printf("                   =======================================\n");
             sleep(1);
         }
     }
@@ -204,12 +195,12 @@ int openFile(User *ptr, int *num) {
     char temp;
     FILE *fp = fopen("UserInfo.txt", "rt");
 
-    if (fp == NULL) 
+    if (fp == NULL)
     {
         perror("open() error!");
         return 1;
     }
-    while (1) 
+    while (1)
     {
         fscanf(fp, "%s %s", ptr[*num].id, ptr[*num].passwd);
         if (feof(fp) != 0)
@@ -224,44 +215,32 @@ int openFile(User *ptr, int *num) {
     return 0;
 }
 
-int insert(User *ptr, int *num) 
+int insert(User *ptr, int *num)
 {
     char id[30];
     char passwd[30];
-    if (*num < MAX_NUM) 
+    if (*num < MAX_NUM)
     {
-        printf(COLOR_YELLOW);
-        printf(" ============================\n");
-        printf("|\n");
-        printf("| Enter your ID :");
+        printf(COLOR_BRIGHT_BLUE);
+        printf("\n");
+        printf("\n");
+        printf("                       Enter ID :  ");
         scanf("%s", id);
-        printf("| Enter your Password:");
+        printf("                 Enter Password :  ");
         scanf("%s", passwd);
-        system("clear");
-        printf(" =======================================\n");
-        printf("| SAVING ###########                    |\n");
-        printf(" =======================================\n");
-        sleep(1);
-        system("clear");
-        printf(" =======================================\n");
-        printf("| SAVING #####################          |\n");
-        printf(" =======================================\n");
-        sleep(1);
-        system("clear");
-        printf(" =======================================\n");
-        printf("| SAVING ###############################|\n");
-        printf(" =======================================\n");
+        printLoading();
 
-        for (int i = 0; i < MAX_NUM; i++) 
+        for (int i = 0; i < MAX_NUM; i++)
         {
-            if (!strcmp(id, ptr[i].id)) 
+            if (!strcmp(id, ptr[i].id))
             {
-                sleep(1);
                 system("clear");
+                printLogo();
+                printf("\n\n\n\n");
                 printf(COLOR_RED);
-                printf(" =======================================\n");
-                printf("| ERROR :  ID already exists !!         |\n");
-                printf(" =======================================\n");
+                printf("                   =======================================\n");
+                printf("                  | ERROR :  ID already exists !!         |\n");
+                printf("                   =======================================\n");
                 sleep(1);
                 return 0;
             }
@@ -269,19 +248,18 @@ int insert(User *ptr, int *num)
         strcpy(ptr[*num].id, id);
         strcpy(ptr[*num].passwd, passwd);
         (*num)++;
-        printf("| Data Inserted              |\n");
-    } 
-    else if (*num = MAX_NUM) 
+    }
+    else if (*num = MAX_NUM)
     {
         sleep(1);
         system("clear");
         printf(COLOR_RED);
-        printf(" =======================================\n");
-        printf("| ERROR :  Data Full !!                 |\n");
-        printf(" =======================================\n");
+        printf("                   =======================================\n");
+        printf("                  | ERROR :  Data Full !!                 |\n");
+        printf("                   =======================================\n");
         sleep(1);
     }
-    if (*num > 0) 
+    if (*num > 0)
     {
         int i, state;
         FILE *fp = fopen("UserInfo.txt", "wt");
@@ -292,7 +270,7 @@ int insert(User *ptr, int *num)
             return 1;
         }
 
-        for (i = 0; i < *num; i++) 
+        for (i = 0; i < *num; i++)
         {
             fprintf(fp, "%s %s", ptr[i].id, ptr[i].passwd);
             fputc('\n', fp);
@@ -303,128 +281,195 @@ int insert(User *ptr, int *num)
             return 1;
         }
         system("clear");
-        printf(" =======================================\n");
-        printf("|  Information Saved !!!                |\n");
-        printf(" =======================================\n");
+        printLogo();
+        printf("\n\n\n\n");
+        printf("                   =======================================\n");
+        printf("                  |  Information Saved !!!                |\n");
+        printf("                   =======================================\n");
         sleep(1);
         return 0;
     }
 }
 
-int logIn(User *ptr, int *num, char *id, char *passwd) 
+int logIn(User *ptr, int *num, char *id, char *passwd)
 {
     if (*num > 0) {
-        for (int i = 0; i < MAX_NUM; i++) 
+        for (int i = 0; i < MAX_NUM; i++)
         {
             if (!strcmp(id, ptr[i].id) && !strcmp(passwd, ptr[i].passwd)) {
-                printf(" =======================================\n");
-                printf("| Login Successful!!  Start Chatting !! |\n");
-                printf(" =======================================\n\n");
+                system("clear");
+                printLogo();
+                printf("\n\n\n\n");
+                printf("                   =======================================\n");
+                printf("                  | Login Successful!!  Start Chatting !! |\n");
+                printf("                   =======================================\n\n");
                 return 1;
             }
         }
-        printf(" =======================================\n");
-        printf("| LogIn Fail :  Wrong ID or PASSWORD !! |\n");
-        printf(" =======================================\n");
+        system("clear");
+        printLogo();
+        printf("\n\n\n\n");
+        printf("                   =======================================\n");
+        printf("                  | LogIn Fail :  Wrong ID or PASSWORD !! |\n");
+        printf("                   =======================================\n");
+        sleep(1);
         return 0;
-    } 
+    }
 
-    else 
+    else
     {
-        printf(" =======================================\n");
-        printf("| LogIn Fail :  No Data !!              |\n");
-        printf(" =======================================\n");
+        system("clear");
+        printLogo();
+        printf("\n\n\n\n");
+        printf("                   =======================================\n");
+        printf("                  | LogIn Fail :  No Data !!              |\n");
+        printf("                   =======================================\n");
+        sleep(1);
         return 0;
     }
 }
 
-int deleted(User *ptr, int *num) 
+int deleted(User *ptr, int *num)
 {
     char id[30];
     char passwd[30];
     int i, j;
 
-    if (*num > 0) 
+    if (*num > 0)
     {
-		  system("clear");
-		  printf(COLOR_RED);
-		  printf("========================================\n");
-		  printf("| Your ID cannot be reused or recovered |\n");
-		  printf("| If you leave. Withdrawal ID can't be  |\n");
-		  printf("| reused or restored by both  yourself  |\n");
-		  printf("| and others. Please choose carefully!  |\n");
-		  printf("|                                       |\n");
-		  printf("| If you still want to delete,          |\n");
-		  printf("| please enter your Id  Passwd below.   |\n");
-        printf("| Input ID:  ");
+        printf(COLOR_YELLOW);
+        printf("                Input ID :  ");
         scanf("%s", id);
-        printf("| Input passwd:  ");
+        printf("            Input passwd :  ");
         scanf("%s", passwd);
-		  printf("|\n");
-		  printf("=======================================\n\n\n");
 
-        for (i = 0; i < MAX_NUM; i++) 
+
+        for (i = 0; i < MAX_NUM; i++)
         {
-            if (strcmp(id, ptr[i].id) == 0) 
+            if (strcmp(id, ptr[i].id) == 0)
             {
                 (*num)--;
-					 printf(COLOR_BLUE);
-					 system("clear");
-					 printf("=======================================\n");
-					 printf("| Delete ########                      |\n");
-					 printf("=======================================\n");
-					 sleep(1);
-					 system("clear");
-					 printf("=======================================\n");
-					 printf("| Delete ###################           |\n");
-					 printf("=======================================\n");
-					 sleep(1);
-					 system("clear");
-					 printf("=======================================\n");
-					 printf("| Delete ##############################|\n");
-					 printf("=======================================\n");
-					 sleep(1);
-					 system("clear");
-					 printf("=======================================\n");
-                printf("|    Member Withdrawal Completed!!!    |\n");
-					 printf("=======================================\n\n\n");
-					 sleep(1);
+				printf(COLOR_BLUE);
+				printLoading();
+				system("clear");
+                printLogo();
+                printf("\n\n\n\n");
+				printf("                   =======================================\n");
+                printf("                  |    Member Withdrawal Completed!!!     |\n");
+				printf("                   =======================================\n");
+				sleep(1);
+                system("clear");
                 if (i != MAX_NUM - 1) {
-                    for (j = i; j < MAX_NUM; j++) 
+                    for (j = i; j < MAX_NUM; j++)
                     {
                         strcpy(ptr[j].id, ptr[j + 1].id);
                         strcpy(ptr[j].passwd, ptr[j + 1].passwd);
                     }
 
-                    *ptr[MAX_NUM - 1].id = 0;
-                    *ptr[MAX_NUM - 1].passwd = 0;
-                } 
-
-                else 
+                    *ptr[MAX_NUM - 1].id = NULL;
+                    *ptr[MAX_NUM - 1].passwd = NULL;
+                }
+                else
                 {
-                    *ptr[MAX_NUM - 1].id = 0;
-                    *ptr[MAX_NUM - 1].passwd = 0;
+                    *ptr[MAX_NUM - 1].id = NULL;
+                    *ptr[MAX_NUM - 1].passwd = NULL;
                 }
                 return 0;
             }
         }
-		  printf(COLOR_RED);
-		  system("clear");
-		  printf("=======================================\n");
-        printf("|   No such information was found!!!  |\n");
-		  printf("=======================================\n\n\n");
-		  sleep(1);
+        system("clear");
+        printLogo();
+		printf(COLOR_RED);
+        printf("\n\n\n");
+		printf("                   =======================================\n");
+        printf("                  |      No such information found!!!      |\n");
+		printf("                   =======================================\n");
+		sleep(1);
         return 0;
-    } 
-    
-    else 
+    }
+    else
     {
 		  printf(COLOR_RED);
 		  system("clear");
-		  printf("========================================\n");
-        printf("|   There is no search information!!!   |\n");
-		  printf("========================================\n\n\n");
+		  printf("                   ========================================\n");
+          printf("                  |      No Data to Delete !!!             |\n");
+		  printf("                   ========================================\n");
 		  sleep(1);
         return 0;
     }
+    return 0;
+}
+
+void printLogo() {
+        system("clear");
+        printf(COLOR_YELLOW);
+        printf("\n");
+        printf(" __                    __    __                ______   __                    __     \n");
+        printf("/  |                  /  |  /  |              /      \ /  |                  /  |    \n");
+        printf("$$ |        ______   _$$ |_ $$/_______       /$$$$$$  |$$ |____    ______   _$$ |_   \n");
+        printf("$$ |      /$$$$$$  |$$$$$$/  /$$$$$$$/       $$ |      $$$$$$$  | $$$$$$  |$$$$$$/   \n");
+        printf("$$ |      $$    $$ |  $$ | __$$      \       $$ |   __ $$ |  $$ | /    $$ |  $$ | __ \n");
+        printf("$$ |_____ $$$$$$$$/   $$ |/  |$$$$$$  |      $$ \__/  |$$ |  $$ |/$$$$$$$ |  $$ |/  |\n");
+        printf("$$       |$$       |  $$  $$//     $$/       $$    $$/ $$ |  $$ |$$    $$ |  $$  $$/ \n");
+        printf("$$$$$$$$/  $$$$$$$/    $$$$/ $$$$$$$/         $$$$$$/  $$/   $$/  $$$$$$$/    $$$$/  \n");
+}
+
+void printMenu() {
+        printf(COLOR_BRIGHT_BLUE);
+        printf("\n\n");
+        printf("                   ======================================= \n");
+        printf("                  |                                       |\n");
+        printf("                  |                                       |\n");
+        printf("                  |      1. Sign  Up                      |\n");
+        printf("                  |      2. Login  &  Start  chat         |\n");
+        printf("                  |      3. Sign  Out                     |\n");
+        printf("                  |      4. Exit                          |\n");
+        printf("                  |                                       |\n");
+        printf("                  |                                       |\n");
+        printf("                   =======================================\n");
+}
+
+void printLoading() {
+        system("clear");
+        printLogo();
+        printf("\n\n\n\n");
+        printf(COLOR_BRIGHT_BLUE);
+        printf("                   =======================================\n");
+        printf("                  | LOADING ###########                   |\n");
+        printf("                   =======================================\n");
+        sleep(1);
+        system("clear");
+        printLogo();
+        printf("\n\n\n\n");
+        printf(COLOR_BRIGHT_BLUE);
+        printf("                   =======================================\n");
+        printf("                  | LOADING #####################         |\n");
+        printf("                   =======================================\n");
+        sleep(1);
+        system("clear");
+        printLogo();
+        printf("\n\n\n\n");
+        printf(COLOR_BRIGHT_BLUE);
+        printf("                   =======================================\n");
+        printf("                  | LOADING ##############################|\n");
+        printf("                   =======================================\n");
+        sleep(1);
+
+}
+
+void printWarning() {
+        system("clear");
+        printLogo();
+	    printf(COLOR_RED);
+        printf("\n\n");
+	    printf("                   =======================================\n");
+	    printf("                  | Your ID cannot be reused or recovered |\n");
+		printf("                  | If you leave. Withdrawal ID can't be  |\n");
+		printf("                  | reused or restored by both  yourself  |\n");
+		printf("                  | and others. Please choose carefully!  |\n");
+		printf("                  |                                       |\n");
+		printf("                  | If you still want to delete,          |\n");
+		printf("                  | please enter your Id  Passwd below.   |\n");
+        printf("                   =======================================\n");
+        printf("\n\n");
 }
